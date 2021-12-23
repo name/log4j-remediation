@@ -1,0 +1,28 @@
+on:
+  push:
+    branches:
+      - main
+
+name: Matrix
+
+jobs:
+  test:
+    ## define strategy
+    strategy:
+      matrix:
+        ## contains a matrix of all of the combinations
+        go-version: [1.17.x]
+        platform: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.platform }}
+
+    ## the steps that will be run through for each version and platform
+    steps:
+    ## sets up go based on the version
+    - name: Install Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{ matrix.go-version }}
+
+    ## checks out our code locally so we can work with the files
+    - name: Checkout code
+      uses: actions/checkout@v2
