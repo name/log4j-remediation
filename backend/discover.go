@@ -1,6 +1,7 @@
 package backend
 
 import (
+	"archive/zip"
 	"fmt"
 	"log"
 	"os"
@@ -26,7 +27,9 @@ func Go() {
 			bar.Add(1)
 			if strings.Contains(path, "log4j-core-") && !strings.Contains(path, "2.17") {
 				if strings.HasSuffix(path, ".jar") || strings.HasSuffix(path, ".ear") || strings.HasSuffix(path, ".war") {
-					detections = append(detections, path)
+					if isVulnerable(path) {
+						detections = append(detections, path)
+					}
 				}
 			}
 			return nil
@@ -36,5 +39,18 @@ func Go() {
 			log.Println(e)
 		}
 		fmt.Println()
+		for _, detection := range detections {
+			log.Println(detection)
+		}
 	}
+}
+
+func isVulnerable(file string) bool {
+	zip, _ := zip.OpenReader(file)
+	for _, f := range zip.File {
+		if strings.Contains(strings.ToLower(f.Name), "jndilookup.class") {
+			return true
+		}
+	}
+	return false
 }
