@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/sakuraji-labs/sakuraji_log4j/backend"
@@ -19,7 +20,23 @@ func main() {
 			Usage: "Scan OS for Log4Shell vulnerability.",
 			Action: func(console *cli.Context) {
 				fmt.Println("Discovering Log4Shell vulnerability [CVE-2021-45105]")
-				backend.Go()
+				var detections = backend.Discover()
+				log.Println("Vulnerable files:")
+				for _, detection := range detections {
+					log.Println(detection)
+				}
+			},
+		},
+		{
+			Name:  "remediate",
+			Usage: "Scan OS and remediate Log4Shell vulnerability.",
+			Action: func(console *cli.Context) {
+				fmt.Println("Discovering Log4Shell vulnerability [CVE-2021-45105]")
+				var detections = backend.Discover()
+				log.Println("Remediating files:")
+				for _, detection := range detections {
+					backend.Remediate(detection)
+				}
 			},
 		},
 	}

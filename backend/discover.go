@@ -12,8 +12,8 @@ import (
 	"github.com/shirou/gopsutil/disk"
 )
 
-// Go : Starts discovery of '.ear|.jar|.war' files
-func Go() {
+// Discover : Starts discovery of '.ear|.jar|.war' files
+func Discover() []string {
 	var detections []string
 	partitions, _ := disk.Partitions(true)
 	for _, partition := range partitions {
@@ -39,10 +39,8 @@ func Go() {
 			log.Println(e)
 		}
 		fmt.Println()
-		for _, detection := range detections {
-			log.Println(detection)
-		}
 	}
+	return detections
 }
 
 func isVulnerable(file string) bool {
